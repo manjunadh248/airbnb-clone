@@ -2,18 +2,21 @@
 // File Parser — PDF and DOCX text extraction
 // ==============================
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const pdf = require('pdf-parse');
 import mammoth from 'mammoth';
 
 /**
  * Extract raw text from a PDF buffer.
- * Uses pdf-parse for fast, reliable extraction.
+ * Uses pdf-parse v2 (class-based API) for text extraction.
+ * NOTE: Dynamically imported to avoid DOMMatrix/canvas polyfill
+ * crashes during Next.js build-time static analysis.
  */
 export async function extractTextFromPDF(buffer: Buffer): Promise<string> {
   try {
-    const data = await pdf(buffer);
-    return cleanExtractedText(data.text);
+    const { PDFParse } = await import('pdf-parse');
+    const parser = new PDFParse({ data: new Uint8Array(buffer) });
+    const result = await parser.getText();
+    await parser.destroy();
+    return cleanExtractedText(result.text);
   } catch (error) {
     console.error('PDF extraction failed:', error);
     throw new Error('Failed to extract text from PDF. The file may be corrupted or password-protected.');

@@ -1,9 +1,7 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useChat } from '@ai-sdk/react';
-import { DefaultChatTransport } from 'ai';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -33,7 +31,7 @@ function getMessageText(msg: { parts?: Array<{ type: string; text?: string }>; c
   return '';
 }
 
-export default function InterviewPage() {
+function InterviewContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const assessmentId = searchParams.get('id');
@@ -312,5 +310,17 @@ export default function InterviewPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function InterviewPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    }>
+      <InterviewContent />
+    </Suspense>
   );
 }
