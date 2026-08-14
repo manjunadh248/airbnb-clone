@@ -18,11 +18,18 @@ async function getListings(searchParams?: { [key: string]: string | string[] | u
     params.set('guests_count', searchParams.guests_count as string);
   }
   
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || `${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8001'}`}/api/listings?${params.toString()}`, { cache: 'no-store' });
-  if (!res.ok) {
+  try {
+    const baseUrl = (process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8001').replace(/\/+$/, '');
+    const res = await fetch(`${baseUrl}/api/listings?${params.toString()}`, { cache: 'no-store' });
+    if (!res.ok) {
+      console.error(`Fetch failed: ${res.status} ${res.statusText}`);
+      return [];
+    }
+    return res.json();
+  } catch (err) {
+    console.error('Fetch threw error:', err);
     return [];
   }
-  return res.json();
 }
 
 export default async function Home({
