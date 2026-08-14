@@ -30,7 +30,7 @@ const categories = [
   { name: 'Windmills', icon: Wind },
 ];
 
-export default function CategoryFilterRow() {
+function CategoryFilterRowInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const currentCategory = searchParams.get('category') || 'Amazing pools';
@@ -64,5 +64,13 @@ export default function CategoryFilterRow() {
         })}
       </div>
     </div>
+  );
+}
+
+export default function CategoryFilterRow() {
+  return (
+    <React.Suspense fallback={<div className="h-[80px]"></div>}>
+      <CategoryFilterRowInner />
+    </React.Suspense>
   );
 }

@@ -15,7 +15,7 @@ const suggestedDestinations = [
   { name: "Manali, Himachal Pradesh", subtitle: "For nature lovers", icon: TreePine, iconColor: "text-green-600", bgColor: "bg-green-50" },
 ];
 
-export default function Navbar() {
+function NavbarInner() {
   const [showSearch, setShowSearch] = useState(false);
   const [showGlobe, setShowGlobe] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -551,5 +551,13 @@ export default function Navbar() {
       {showGlobe && <GlobeModal onClose={() => setShowGlobe(false)} />}
       <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
     </>
+  );
+}
+
+export default function Navbar() {
+  return (
+    <React.Suspense fallback={<nav className="h-[80px] border-b border-airbnb-border bg-white sticky top-0 z-50"></nav>}>
+      <NavbarInner />
+    </React.Suspense>
   );
 }

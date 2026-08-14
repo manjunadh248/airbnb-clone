@@ -3,7 +3,7 @@ import React, { useState, useEffect, use } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ChevronLeft, Star } from 'lucide-react';
 
-export default function CheckoutPage({ params }: { params: Promise<{ id: string }> }) {
+function CheckoutPageInner({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const checkin = searchParams.get('checkin');
@@ -263,5 +263,13 @@ export default function CheckoutPage({ params }: { params: Promise<{ id: string 
         </div>
       </main>
     </div>
+  );
+}
+
+export default function CheckoutPage(props: { params: Promise<{ id: string }> }) {
+  return (
+    <React.Suspense fallback={<div className="min-h-screen bg-white"></div>}>
+      <CheckoutPageInner {...props} />
+    </React.Suspense>
   );
 }
